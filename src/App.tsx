@@ -9,6 +9,7 @@ import PDetalhesAluno from './pages/PDetalhes/PDetalhesAluno/PDetalhesAluno'
 import PDetalhesEmprestimo from './pages/PDetalhes/PDetalhesEmprestimo/PDetalhesEmprestimo'
 import PDetalhesLivro from './pages/PDetalhes/PDetalhesLivro/PDetalhesLivro'
 import PCadastroAluno from './pages/PCadastro/PCadastroAluno/PCadastroAluno'
+import PCadastroLivro from './pages/PCadastro/PCadastroLivro/PCadastroLivro'
 
 
 // import ProtectedRoute from './components/Rotas/ProtectedRoutes'
@@ -24,6 +25,7 @@ function App() {
         <Route path='/lista/emprestimos' element={<PListagemEmprestimo />} />
         <Route path='/lista/livros' element={<PListagemLivro />} />
         <Route path='/cadastro/aluno' element={<PCadastroAluno />} />
+        <Route path='/cadastro/livro' element={<PCadastroLivro />} />
         <Route path='/detalhes/aluno/:id_aluno' element={<PDetalhesAluno />} />
         <Route path='/detalhes/emprestimo/:id_emprestimo' element={<PDetalhesEmprestimo />} />
         <Route path='/detalhes/livro/:id_livro' element={<PDetalhesLivro />} />
