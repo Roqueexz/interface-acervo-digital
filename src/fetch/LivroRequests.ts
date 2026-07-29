@@ -89,6 +89,42 @@ class LivroRequests {
       return false;
     }
   }
+  async removerLivro(id_livro: number): Promise<boolean> {
+    try {
+      // recupera o token de autenticação
+      const token = localStorage.getItem("token");
+      // faz a chamada à API e guarda a resposta
+      const respostaAPI = await fetch(
+        `${this.serverURL}${this.endpointLivro}/${id_livro}`,
+        {
+          // utiliza o verbo HTTP DELETE
+          method: "DELETE",
+          // envia o token para autenticação na API
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": `${token}`,
+          },
+        },
+      );
+
+      // caso a resposta da API seja negativa, lançamos erros no console
+      if (!respostaAPI.ok) {
+        const errorData = await respostaAPI.json().catch(() => ({}));
+        const errorMessage =
+          errorData.mensagem ||
+          `Erro ${respostaAPI.status}: ${respostaAPI.statusText}`;
+        throw new Error(errorMessage);
+      }
+
+      console.info(`${respostaAPI.status} ${respostaAPI.statusText}`);
+
+      // retorna verdadeiro caso a API tenha removido o registro
+      return true;
+    } catch (error) {
+      console.error(`Erro ao fazer consulta à API. ${error}`);
+      throw error;
+    }
+  }
 }
 
 export default new LivroRequests();
