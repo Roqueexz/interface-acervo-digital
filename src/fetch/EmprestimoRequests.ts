@@ -36,6 +36,7 @@ class EmprestimoRequests {
       return;
     }
   }
+
   async obterEmprestimoPorId(
     id_emprestimo: number,
   ): Promise<EmprestimoDTO | undefined> {
@@ -62,6 +63,7 @@ class EmprestimoRequests {
       return;
     }
   }
+
   async enviarFormularioEmprestimo(
     formEmprestimo: EmprestimoDTO,
   ): Promise<boolean> {
@@ -89,6 +91,69 @@ class EmprestimoRequests {
       return true;
     } catch (error) {
       console.error(`Erro ao fazer consulta à API. ${error}`);
+      return false;
+    }
+  }
+
+  async atualizarEmprestimo(
+    id_emprestimo: number,
+    formEmprestimo: EmprestimoDTO,
+  ): Promise<boolean> {
+    try {
+      const token = localStorage.getItem("token");
+      const respostaAPI = await fetch(
+        `${this.serverURL}${this.endpointEmprestimo}/${id_emprestimo}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": `${token}`,
+          },
+          body: JSON.stringify(formEmprestimo),
+        },
+      );
+
+      if (!respostaAPI.ok)
+        throw new Error(
+          `Erro ${respostaAPI.status}: ${respostaAPI.statusText}`,
+        );
+
+      console.info(`${respostaAPI.status}: ${respostaAPI.statusText}`);
+
+      return true;
+    } catch (error) {
+      console.error(`Erro ao atualizar empréstimo na API. ${error}`);
+      return false;
+    }
+  }
+
+  async removerEmprestimo(id_emprestimo: number): Promise<boolean> {
+    try {
+      const token = localStorage.getItem("token");
+      const respostaAPI = await fetch(
+        `${this.serverURL}${this.endpointEmprestimo}/${id_emprestimo}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": `${token}`,
+          },
+        },
+      );
+
+      if (!respostaAPI.ok) {
+        const errorData = await respostaAPI.json().catch(() => ({}));
+        const errorMessage =
+          errorData.mensagem ||
+          `Erro ${respostaAPI.status}: ${respostaAPI.statusText}`;
+        throw new Error(errorMessage);
+      }
+
+      console.info(`${respostaAPI.status} ${respostaAPI.statusText}`);
+
+      return true;
+    } catch (error) {
+      console.error(`Erro ao remover empréstimo na API. ${error}`);
       return false;
     }
   }

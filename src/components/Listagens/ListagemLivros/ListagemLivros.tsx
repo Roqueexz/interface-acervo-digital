@@ -31,28 +31,21 @@ function ListagemLivros(): JSX.Element {
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  const handleRemoverLivro = async (id_livro: number) => {
-    // verifica se o usuário realmente quer remover o registro
-    const confirmar = window.confirm(
-      "Você realmente deseja remover este registro?",
-    );
-    // se o usuário respondeu que sim, faremos o processo
-    if (confirmar) {
-      try {
-        // chama a função removerLivro passando o ID e salva a resposta
-        const sucesso = await LivroRequests.removerLivro(id_livro);
-        // caso o livro seja removido, exibimos um alerta de sucesso ao usuário
-        if (sucesso) {
-          alert("Livro removido com sucesso");
-          setLivros(livros.filter((livro) => livro.id_livro !== id_livro));
-        } else {
-          // caso não seja removido, exibimos uma mensagem de erro
-          alert("Não foi possível remover o registro.");
-        }
-      } catch (error) {
-        console.error("Erro ao remover livro:", error);
+  const handleDeletar = async (id_livro: number, titulo: string) => {
+    const confirmar = window.confirm(`Tem certeza que deseja remover o livro "${titulo}"?`);
+    if (!confirmar) return;
+
+    try {
+      const sucesso = await LivroRequests.removerLivro(id_livro);
+      if (sucesso) {
+        alert("Livro removido com sucesso!");
+        setLivros(prev => prev.filter(livro => livro.id_livro !== id_livro));
+      } else {
         alert("Erro ao remover livro.");
       }
+    } catch (error) {
+      console.error("Erro ao remover livro:", error);
+      alert("Erro ao remover livro.");
     }
   };
 
@@ -133,13 +126,18 @@ function ListagemLivros(): JSX.Element {
                         >
                           Detalhes
                         </button>
-                        <button className="w-full sm:w-auto bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-emerald-600 hover:text-white transition-all">
+                        <button
+                          className="w-full sm:w-auto bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-emerald-600 hover:text-white transition-all hover:cursor-pointer"
+                          onClick={() =>
+                            navigate(`/atualizar/livro/${livro.id_livro}`)
+                          }
+                        >
                           Atualizar
                         </button>
                         <button
-                          className="w-full sm:w-auto bg-red-100 text-red-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-red-600 hover:text-white transition-all"
+                          className="w-full sm:w-auto bg-red-100 text-red-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-red-600 hover:text-white transition-all hover:cursor-pointer"
                           onClick={() =>
-                            livro.id_livro && handleRemoverLivro(livro.id_livro)
+                            livro.id_livro && handleDeletar(livro.id_livro, livro.titulo)
                           }
                         >
                           Deletar

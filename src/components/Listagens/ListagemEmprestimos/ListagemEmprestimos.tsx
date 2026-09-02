@@ -31,6 +31,19 @@ function ListagemEmprestimos(): JSX.Element {
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+    const handleDeletar = async (id_emprestimo: number) => {
+        const confirmar = window.confirm(`Tem certeza que deseja remover o empréstimo #${id_emprestimo}?`);
+        if (!confirmar) return;
+
+        const sucesso = await EmprestimoRequests.removerEmprestimo(id_emprestimo);
+        if (sucesso) {
+            alert("Empréstimo removido com sucesso!");
+            setEmprestimos(prev => prev.filter(emp => emp.id_emprestimo !== id_emprestimo));
+        } else {
+            alert("Erro ao remover empréstimo.");
+        }
+    };
+
     const formatDate = (date?: Date) => {
         if (!date) return "-";
         return new Date(date).toLocaleDateString('pt-BR');
@@ -93,8 +106,18 @@ function ListagemEmprestimos(): JSX.Element {
                                                 >
                                                     Detalhes
                                                 </button>
-                                                <button className="w-full sm:w-auto bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-emerald-600 hover:text-white transition-all">Atualizar</button>
-                                                <button className="w-full sm:w-auto bg-red-100 text-red-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-red-600 hover:text-white transition-all">Deletar</button>
+                                                <button
+                                                    className="w-full sm:w-auto bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-emerald-600 hover:text-white transition-all hover:cursor-pointer"
+                                                    onClick={() => navigate(`/atualizar/emprestimo/${emp.id_emprestimo}`)}
+                                                >
+                                                    Atualizar
+                                                </button>
+                                                <button
+                                                    className="w-full sm:w-auto bg-red-100 text-red-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-red-600 hover:text-white transition-all hover:cursor-pointer"
+                                                    onClick={() => handleDeletar(emp.id_emprestimo)}
+                                                >
+                                                    Deletar
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>

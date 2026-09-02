@@ -26,8 +26,8 @@ class LivroRequests {
       );
 
       if (respostaAPI.ok) {
-        const listaDeAlunos = await respostaAPI.json();
-        return listaDeAlunos;
+        const listaDeLivros = await respostaAPI.json();
+        return listaDeLivros;
       } else {
         throw new Error(`Não foi possível listar os livros.`);
       }
@@ -61,6 +61,7 @@ class LivroRequests {
       return;
     }
   }
+
   async enviarFormularioLivro(formLivro: LivroDTO): Promise<boolean> {
     try {
       const token = localStorage.getItem("token");
@@ -89,17 +90,43 @@ class LivroRequests {
       return false;
     }
   }
-  async removerLivro(id_livro: number): Promise<boolean> {
+
+  async atualizarLivro(id_livro: number, formLivro: LivroDTO): Promise<boolean> {
     try {
-      // recupera o token de autenticação
       const token = localStorage.getItem("token");
-      // faz a chamada à API e guarda a resposta
       const respostaAPI = await fetch(
         `${this.serverURL}${this.endpointLivro}/${id_livro}`,
         {
-          // utiliza o verbo HTTP DELETE
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": `${token}`,
+          },
+          body: JSON.stringify(formLivro),
+        },
+      );
+
+      if (!respostaAPI.ok)
+        throw new Error(
+          `Erro ${respostaAPI.status}: ${respostaAPI.statusText}`,
+        );
+
+      console.info(`${respostaAPI.status}: ${respostaAPI.statusText}`);
+
+      return true;
+    } catch (error) {
+      console.error(`Erro ao atualizar livro na API. ${error}`);
+      return false;
+    }
+  }
+
+  async removerLivro(id_livro: number): Promise<boolean> {
+    try {
+      const token = localStorage.getItem("token");
+      const respostaAPI = await fetch(
+        `${this.serverURL}${this.endpointLivro}/${id_livro}`,
+        {
           method: "DELETE",
-          // envia o token para autenticação na API
           headers: {
             "Content-Type": "application/json",
             "x-access-token": `${token}`,
@@ -107,7 +134,6 @@ class LivroRequests {
         },
       );
 
-      // caso a resposta da API seja negativa, lançamos erros no console
       if (!respostaAPI.ok) {
         const errorData = await respostaAPI.json().catch(() => ({}));
         const errorMessage =
@@ -118,11 +144,10 @@ class LivroRequests {
 
       console.info(`${respostaAPI.status} ${respostaAPI.statusText}`);
 
-      // retorna verdadeiro caso a API tenha removido o registro
       return true;
     } catch (error) {
       console.error(`Erro ao fazer consulta à API. ${error}`);
-      throw error;
+      return false;
     }
   }
 }

@@ -61,6 +61,7 @@ class AlunoRequests {
       return;
     }
   }
+
   async enviarFormularioAluno(formAluno: AlunoDTO): Promise<boolean> {
     try {
       const token = localStorage.getItem("token");
@@ -89,17 +90,43 @@ class AlunoRequests {
       return false;
     }
   }
-  async removerAluno(id_aluno: number): Promise<boolean> {
+
+  async atualizarAluno(id_aluno: number, formAluno: AlunoDTO): Promise<boolean> {
     try {
-      // recupera o token de autenticação
       const token = localStorage.getItem("token");
-      // faz a chamada à API e guarda a resposta
       const respostaAPI = await fetch(
         `${this.serverURL}${this.endpointAluno}/${id_aluno}`,
         {
-          // utiliza o verbo HTTP DELETE
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": `${token}`,
+          },
+          body: JSON.stringify(formAluno),
+        },
+      );
+
+      if (!respostaAPI.ok)
+        throw new Error(
+          `Erro ${respostaAPI.status}: ${respostaAPI.statusText}`,
+        );
+
+      console.info(`${respostaAPI.status}: ${respostaAPI.statusText}`);
+
+      return true;
+    } catch (error) {
+      console.error(`Erro ao atualizar aluno na API. ${error}`);
+      return false;
+    }
+  }
+
+  async removerAluno(id_aluno: number): Promise<boolean> {
+    try {
+      const token = localStorage.getItem("token");
+      const respostaAPI = await fetch(
+        `${this.serverURL}${this.endpointAluno}/${id_aluno}`,
+        {
           method: "DELETE",
-          // envia o token para autenticação na API
           headers: {
             "Content-Type": "application/json",
             "x-access-token": `${token}`,
@@ -107,7 +134,6 @@ class AlunoRequests {
         },
       );
 
-      // caso a resposta da API seja negativa, lançamos erros no console
       if (!respostaAPI.ok) {
         const errorData = await respostaAPI.json().catch(() => ({}));
         const errorMessage =
@@ -118,11 +144,10 @@ class AlunoRequests {
 
       console.info(`${respostaAPI.status} ${respostaAPI.statusText}`);
 
-      // retorna verdadeiro caso a API tenha removido o registro
       return true;
     } catch (error) {
       console.error(`Erro ao fazer consulta à API. ${error}`);
-      throw error;
+      return false;
     }
   }
 }

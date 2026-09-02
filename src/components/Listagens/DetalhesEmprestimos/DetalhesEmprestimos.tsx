@@ -151,11 +151,13 @@ function DetalhesEmprestimo({ id_emprestimo }: DetalhesEmprestimoProps): JSX.Ele
             </Card>
             <div className="w-full max-w-4xl mx-auto mt-6 sm:mt-8">
                 <button
-                    className="w-full bg-slate-700 hover:bg-slate-500 text-white px-4 py-3 md:mb-2 rounded-md font-bold transition-all shadow-md active:scale-95">
+                    className="w-full bg-slate-700 hover:bg-slate-500 text-white px-4 py-3 md:mb-2 rounded-md font-bold transition-all shadow-md active:scale-95 hover:cursor-pointer"
+                    onClick={() => navigate(`/atualizar/emprestimo/${emprestimo.id_emprestimo}`)}
+                >
                     Editar Empréstimo
                 </button>
                 <button
-                    className="w-full bg-white text-black hover:bg-slate-500 px-4 py-3 rounded-md font-bold transition-all shadow-md active:scale-95"
+                    className="w-full bg-white text-black hover:bg-slate-500 px-4 py-3 rounded-md font-bold transition-all shadow-md active:scale-95 hover:cursor-pointer"
                     onClick={() => navigate(`/lista/emprestimos`)}
                 >
                     Voltar
