@@ -1,5 +1,5 @@
 import type LivroDTO from "../dto/LivroDTO";
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
 
 // Classe responsável por fazer requisições à API - livro
 class LivroRequests {

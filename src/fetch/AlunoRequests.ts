@@ -1,6 +1,6 @@
 // Classe responsável por fazer requisições à API - aluno
 import type AlunoDTO from "../dto/AlunoDTO";
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
 
 class AlunoRequests {
   private serverURL;
